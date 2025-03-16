@@ -1,0 +1,61 @@
+1. Authentication (Login with OTP)
+User enters email → Clicks "Send OTP".
+Backend generates OTP and sends it to the email.
+User enters OTP → Clicks "Verify OTP".
+Backend validates OTP and returns a JWT token if successful.
+Frontend stores token (in memory or shared_preferences) and navigates to the Home Screen.
+2. Home Screen (Main Dashboard)
+UI Layout
+Top-right: Logout button.
+Total Balance Display:
+Shows the net balance (Total amount owed & owed to).
+List of Transactions (Owes/Debts):
+Each transaction is displayed in a card format.
+Left Side: User’s Name
+Right Side: "You owe ₹X" or "User owes you ₹X".
+Bottom-right: "Add Expense" button.
+Backend Logic
+Fetch the current user's transactions from the database using the JWT token.
+Calculate the total balance by summing up the amounts owed and owed to.
+3. Add Expense Screen
+UI Layout
+Email field → Enter the second user's email.
+Amount field → Enter the total amount.
+Options for splitting:
+"You paid, Split Equally"
+"You are owed the full amount"
+"User paid, Split Equally"
+"User is owed the full amount"
+Submit Button: "Add Expense"
+Backend Logic
+Validate input (email format, non-empty fields, valid amount).
+Send a POST request to the backend with:
+User ID (from token)
+Friend's email
+Total Amount
+Selected Split Option
+Backend stores the expense and updates both users' balances accordingly.
+Frontend refreshes the home screen to show the new expense.
+4. Record Payment Screen
+UI Layout
+Title: "Record Payment"
+Text: "You paid <User Name> ₹<Balance>"
+Input field: Enter amount paid.
+Button: "Done"
+Backend Logic
+Validate input (amount should be ≤ balance).
+Deduct the entered amount from the user's debt.
+If balance becomes 0, remove the debt entry.
+Update the backend & refresh the Home Screen.
+5. Logout Flow
+Clear JWT token from memory.
+Navigate back to the Login Screen.
+Backend API Endpoints
+Endpoint	Method	Purpose
+/auth/send-otp	POST	Send OTP to user email.
+/auth/verify-otp	POST	Verify OTP and return JWT token.
+/expense/create	POST	Add a new expense.
+/expense/list	GET	Get all expenses for a user.
+/expense/pay	POST	Record a payment.
+/auth/logout	POST	Logout user.
+This covers authentication, expense splitting, tracking balances, and recording payments just like Splitwise.
