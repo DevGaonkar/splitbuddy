@@ -97,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Container(
         decoration: BoxDecoration(
-          color: Color(0xFFF4E1C1), // Champagne background
+          color: Color(0xFFF4E1C1),
         ),
         child: RefreshIndicator(
           onRefresh: _fetchData,
@@ -122,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF0A192F), // Navy blue text
+                              color: Color(0xFF0A192F),
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -131,18 +131,23 @@ class _HomeScreenState extends State<HomeScreen> {
                         ..._balances.map((record) {
                           String friendDisplay = "";
                           double displayedBalance = (record["balance"] as num).toDouble();
+                          bool canProceed = false;
 
                           if (record['user1']["_id"] == _currentUserId) {
                             friendDisplay = record['user2']["name"] ?? record['user2']["email"];
+                            canProceed = displayedBalance >= 0;
                           } else if (record['user2']["_id"] == _currentUserId) {
                             displayedBalance = -displayedBalance;
                             friendDisplay = record['user1']["name"] ?? record['user1']["email"];
+                            canProceed = displayedBalance >= 0;
                           }
 
                           return InkWell(
-                            onTap: () {
-                              Navigator.pushNamed(context, '/record_payment', arguments: record);
-                            },
+                            onTap: canProceed
+                                ? () {
+                                    Navigator.pushNamed(context, '/record_payment', arguments: record);
+                                  }
+                                : null,
                             child: Card(
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12)),

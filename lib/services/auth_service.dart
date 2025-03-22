@@ -29,7 +29,6 @@ class AuthService {
     );
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      // Now the response contains token and user_id
       return {
         "success": true,
         "token": data["token"],
@@ -41,6 +40,24 @@ class AuthService {
         "success": false,
         "error": data["error"] ?? "Error verifying OTP"
       };
+    }
+  }
+
+  Future<String?> getCurrentUserEmail(String token) async {
+    final url = Uri.parse("$baseUrl/auth/me");
+    final response = await http.get(
+      url,
+      headers: {
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/json",
+      },
+    );
+    
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data["email"];
+    } else {
+      return null;
     }
   }
 }
